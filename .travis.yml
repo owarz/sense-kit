@@ -1,0 +1,5 @@
+language: objective-c
+cache: bundler
+install: make install
+script: make ci
+osx_image: beta-xcode6.3

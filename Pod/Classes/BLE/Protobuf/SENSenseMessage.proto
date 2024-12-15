@@ -1,0 +1,127 @@
+enum ErrorType {
+    TIME_OUT = 0;              // Internal time out, no implemented yet.
+    NETWORK_ERROR = 1;         // Network not available or unreachable network.
+    DEVICE_ALREADY_PAIRED = 2; // User tries to paired a paired device to another account.
+    INTERNAL_DATA_ERROR = 3;   // Data packets corruption during BLE or SPI transfer
+    DEVICE_DATABASE_FULL = 4;  // No more space for device pairing.
+    DEVICE_NO_MEMORY = 5;
+    INTERNAL_OPERATION_FAILED = 6;
+    NO_ENDPOINT_IN_RANGE = 7;
+    WLAN_CONNECTION_ERROR = 8;
+    FAIL_TO_OBTAIN_IP = 9;
+    WLAN_ENDPOINT_DELETE_FAILED = 10;
+    INVALID_ACCOUNT_ID = 11;
+    FORCE_DATA_PUSH_FAILED = 12;
+    PROTOBUF_ENCODE_FAILED = 13;
+    PROTOBUF_DECODE_FAILED = 14;
+    SERVER_CONNECTION_TIMEOUT = 15;
+}
+
+enum WiFiState {
+    NO_WLAN_CONNECTED = 0;
+    WLAN_CONNECTING = 1;
+    WLAN_CONNECTED = 2;
+    IP_OBTAINED = 3;
+    DNS_RESOLVED = 4;
+    SOCKET_CONNECTED = 5;
+    REQUEST_SENT = 6;
+    CONNECTED = 7;
+    SSL_FAIL = 8;
+    HELLO_KEY_FAIL = 9;
+    DNS_FAILED = 10;
+    CONNECT_FAILED = 11;
+}
+
+message SENWifiEndpoint {
+    enum SecurityType {
+        OPEN = 0;
+        WEP = 1;
+        WPA = 2; /* same as WPA2 */
+        WPS_PBC = 3;
+        WPS_PIN = 4;
+        WPA_ENTERPRISE = 5;
+        P2P_PBC = 6;
+        P2P_PIN_KEYPAD = 7;
+        P2P_PIN_DISPLAY = 8;
+        P2P_PIN_AUTO = 9;
+        WEP_SHARED = 10;
+    }
+    required string ssid = 1;
+    optional bytes bssid = 2;
+    required int32 rssi = 4;
+    required SecurityType security = 5;
+}
+
+message PillData {
+    optional string deviceId = 1;
+    optional int32 batteryLevel = 2;
+    optional int32 uptime = 3;
+    optional bytes motionDataEntrypted = 4;
+    optional int32 firmwareVersion = 5;
+}
+
+message BatchedPillData {
+    repeated PillData pills = 1;
+    required string device_id = 2;
+}
+
+message SENSenseMessage {
+    enum Type {
+        SET_TIME = 0;
+        GET_TIME = 1;
+        SET_WIFI_ENDPOINT = 2;
+        GET_WIFI_ENDPOINT = 3;
+        SET_ALARMS = 4;
+        GET_ALARMS = 5;
+        SWITCH_TO_PAIRING_MODE = 6;
+        SWITCH_TO_NORMAL_MODE = 7;
+        START_WIFISCAN = 8;
+        STOP_WIFISCAN = 9;
+        GET_DEVICE_ID = 10;
+        EREASE_PAIRED_PHONE = 11;
+        PAIR_PILL = 12;
+        ERROR = 13;  // if you receive this, that means something goes wrong.
+        PAIR_SENSE = 14;
+        UNPAIR_PILL = 15;
+        DFU_BEGIN = 16;
+        PILL_DATA = 17;
+        PILL_HEARTBEAT = 18;
+        PILL_DFU_BEGIN = 19;
+        FACTORY_RESET = 20;
+        LED_BUSY = 25;
+        LED_TRIPPY = 26;
+        LED_OFF = 27;
+        SCAN_WIFI = 28;
+        GET_NEXT_WIFI_AP = 29;
+        LED_SUCCESS = 30;
+        PUSH_DATA = 31;
+        SET_COUNTRY_CODE = 32;
+        SET_SERVER_IP = 33;
+        CONNECTION_STATE = 34;
+    }
+    required int32 version = 1;
+    required Type type = 2;
+    optional string deviceId = 3;
+    optional string accountId = 4;
+    optional ErrorType error = 5;  // SENSE_COMMAND_ERROR
+    optional string wifiName = 6;
+    optional string wifiSSID = 7;
+    optional bytes wifiPassword = 8;
+    optional int32 batteryLevel = 9;
+    optional int32 uptime = 10;
+    optional int32 motionData = 11;
+    optional bytes motionDataEncrypted = 12;
+    optional int32 firmwareVersion = 13;
+    repeated SENWifiEndpoint wifisDetected = 14;
+    optional SENWifiEndpoint.SecurityType securityType = 15;
+    optional PillData pillData = 16;
+    optional WiFiState wifiState = 17;
+    optional int32 bondCount = 18;
+    optional string countryCode = 19;
+    optional bytes aesKey = 20;
+    optional string topVersion = 21;
+    optional uint32 serverIP = 22;
+    optional uint32 socketErrorCode = 23;
+    optional string httpResponseCode = 24;
+    optional int32 appVersion = 25;
+}
